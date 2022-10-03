@@ -1,27 +1,54 @@
 function getComputerChoice() {
-  choices = ["Rock", "Paper", "Scissors"];
+  choices = ["rock", "paper", "scissors"];
   return choices[Math.floor(Math.random() * choices.length)];
 }
 
 function playRound(playerSelection, computerSelection) {
-  playerSelection = playerSelection || "Rock";
-  playerSelection = playerSelection.charAt(0).toUpperCase() + playerSelection.slice(1).toLowerCase();
-  
+  winner.style.visibility = "hidden";
+
   if (playerSelection === computerSelection) {
-    return `Tie! ${playerSelection} ties with ${computerSelection}.`;
+    result.textContent = `Tie! ${capitalizeFirstLetter(playerSelection)} ties with ${computerSelection}.`;
   }
-  else if ((playerSelection === "Rock" && computerSelection === "Scissors") || (playerSelection === "Paper" && computerSelection === "Rock") || (playerSelection === "Scissors" && computerSelection === "Paper")) {
-    return `You win! ${playerSelection} beats ${computerSelection}.`;
+  else if ((playerSelection === "rock" && computerSelection === "scissors") || (playerSelection === "paper" && computerSelection === "rock") || (playerSelection === "scissors" && computerSelection === "paper")) {
+    result.textContent = `You win! ${capitalizeFirstLetter(playerSelection)} beats ${computerSelection}.`;
+    playerScore += 1;
   }
   else {
-    return `You lose! ${playerSelection} loses against ${computerSelection}.`;
+    result.textContent = `You lose! ${capitalizeFirstLetter(playerSelection)} loses against ${computerSelection}.`;
+    computerScore += 1;
   }
+
+  if (playerScore === 5) {
+    winner.textContent = "You win!";
+    winner.style.visibility = "visible";
+    playerScore = 0;
+    computerScore = 0;
+  }
+  else if (computerScore === 5) {
+    winner.textContent = "Computer wins!";
+    winner.style.visibility = "visible";
+    playerScore = 0;
+    computerScore = 0;
+  }
+
+  score.textContent = `${playerScore} - ${computerScore}`;
+  result.style.visibility = "visible";
 }
 
-function game() {
-  for (i = 0; i < 5; i++) {
-    console.log(playRound(prompt("Make your choice."), getComputerChoice()));
-  }
-}
+const result = document.querySelector(".result");
+const winner = document.querySelector(".winner");
+const gameButtons = document.querySelectorAll(".game-buttons");
+const score = document.querySelector(".score");
+let playerScore = 0;
+let computerScore = 0;
 
-game();
+
+result.style.visibility = "hidden";
+result.textContent = "result";
+winner.style.visibility = "hidden";
+winner.textContent = "winner";
+gameButtons.forEach(button => {button.addEventListener("click", () => playRound(button.id, getComputerChoice()))});
+
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
